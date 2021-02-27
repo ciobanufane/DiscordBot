@@ -25,66 +25,70 @@ async def echo(ctx, *args):
 
 @bot.command(name="ntc")
 @commands.has_guild_permissions(manage_channels=True)
-async def new_text_channel(ctx, channel_name, category_name="Text Channels"):
+async def new_text_channel(ctx, channel_name, category_name=None):
+
     exist_cat = discord.utils.get(ctx.guild.categories, name=category_name)
-    if not exist_cat:
-        await ctx.send(f"No specified category for the text channel")
+    if category_name and not exist_cat:
+        await ctx.send(f"Category \"{category_name}\" does not exist")
         return
 
-    exist_channel = discord.utils.get(exist_cat.text_channels, name=channel_name)
+    exist_channel = discord.utils.get(ctx.guild.text_channels, name=channel_name, category=exist_cat)
     if exist_channel:
-        await ctx.send(f"{channel_name} already exists; enter another channel name")
-        return
+        await ctx.send(f"Text channel \"{channel_name}\" already exists under category: {category_name}\n"
+                       f"Enter a unique channel name")
+    else:
+        await ctx.guild.create_text_channel(channel_name, category=exist_cat)
 
-    await ctx.guild.create_text_channel(channel_name, category=exist_cat)
 
-
-@bot.command(name="dtc")
+@bot.command(name="rtc")
 @commands.has_guild_permissions(manage_channels=True)
-async def delete_text_channel(ctx, channel_name, category_name):
+async def remove_text_channel(ctx, channel_name, category_name=None):
+
     exist_cat = discord.utils.get(ctx.guild.categories, name=category_name)
-    if not exist_cat:
-        await ctx.send(f"{category_name} does not exist")
+    if category_name and not exist_cat:
+        await ctx.send(f"Category \"{category_name}\" does not exist")
         return
 
-    exist_channel = discord.utils.get(exist_cat.text_channels, name=channel_name)
-    if not exist_channel:
-        await ctx.send(f"{channel_name} does not exist under {exist_cat}")
-        return
-
-    await exist_channel.delete()
+    exist_channel = discord.utils.get(ctx.guild.text_channels, name=channel_name, category=exist_cat)
+    if exist_channel:
+        await ctx.send(f"Deleting text channel \"{channel_name}\" under category: {category_name}")
+        await exist_channel.delete()
+    else:
+        await ctx.send(f"Text channel \"{channel_name}\" does not exist under category: {category_name}")
 
 
 @bot.command(name="nvc")
 @commands.has_guild_permissions(manage_channels=True)
-async def new_voice_channel(ctx, channel_name, category_name):
+async def new_voice_channel(ctx, channel_name, category_name=None):
+
     exist_cat = discord.utils.get(ctx.guild.categories, name=category_name)
-    if not exist_cat:
-        await ctx.send(f"No specified category for the voice channel")
+    if category_name and not exist_cat:
+        await ctx.send(f"Category \"{category_name}\" does not exist")
         return
 
-    exist_channel = discord.utils.get(exist_cat.voice_channels, name=channel_name)
+    exist_channel = discord.utils.get(ctx.guild.voice_channels, name=channel_name, category=exist_cat)
     if exist_channel:
-        await ctx.send(f"{channel_name} already exists; enter another channel name")
-        return
+        await ctx.send(f"Voice channel \"{channel_name}\" already exists under category: {category_name}\n"
+                       f"Enter a unique channel name")
+    else:
+        await ctx.guild.create_voice_channel(channel_name, category=exist_cat)
 
-    await ctx.guild.create_voice_channel(channel_name, category=exist_cat)
 
-
-@bot.command(name="dvc")
+@bot.command(name="rvc")
 @commands.has_guild_permissions(manage_channels=True)
-async def delete_voice_channel(ctx, channel_name, category_name):
+async def remove_voice_channel(ctx, channel_name, category_name=None):
+
     exist_cat = discord.utils.get(ctx.guild.categories, name=category_name)
-    if not exist_cat:
-        await ctx.send(f"{category_name} does not exist")
+    if category_name and not exist_cat:
+        await ctx.send(f"Category \"{category_name}\" does not exist")
         return
 
-    exist_channel = discord.utils.get(exist_cat.voice_channels, name=channel_name)
-    if not exist_channel:
-        await ctx.send(f"{channel_name} does not exist under {exist_cat}")
-        return
-
-    await exist_channel.delete()
+    exist_channel = discord.utils.get(ctx.guild.voice_channels, name=channel_name, category=exist_cat)
+    if exist_channel:
+        await ctx.send(f"Deleting voice channel \"{channel_name}\" under category: {category_name}")
+        await exist_channel.delete()
+    else:
+        await ctx.send(f"Voice channel \"{channel_name}\" does not exist under category: {category_name}")
 
 
 @bot.command(name="new_role")
