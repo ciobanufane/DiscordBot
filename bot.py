@@ -15,15 +15,17 @@ bot = commands.Bot(command_prefix="!")
 @bot.event
 async def on_ready():
     print('I am ready')
+    watch = discord.Activity(type=discord.ActivityType.watching, name="my life go away")
+    await bot.change_presence(status=discord.Status.idle, activity=watch)
 
 
 @bot.command(name='echo')
-async def echo(ctx, *args):
+async def echo(ctx, *, message: str):
     if str(ctx.channel.id) == TEST:
-        await ctx.send(" ".join(args), delete_after=15)
+        await ctx.send(message, delete_after=15)
 
 
-@bot.command(name="ntc")
+@bot.command(name="new-textchannel")
 @commands.has_guild_permissions(manage_channels=True)
 async def new_text_channel(ctx, channel_name, category_name=None):
 
@@ -40,7 +42,7 @@ async def new_text_channel(ctx, channel_name, category_name=None):
         await ctx.guild.create_text_channel(channel_name, category=exist_cat)
 
 
-@bot.command(name="rtc")
+@bot.command(name="remove-textchannel")
 @commands.has_guild_permissions(manage_channels=True)
 async def remove_text_channel(ctx, channel_name, category_name=None):
 
@@ -57,7 +59,7 @@ async def remove_text_channel(ctx, channel_name, category_name=None):
         await ctx.send(f"Text channel \"{channel_name}\" does not exist under category: {category_name}")
 
 
-@bot.command(name="nvc")
+@bot.command(name="new-voicechannel")
 @commands.has_guild_permissions(manage_channels=True)
 async def new_voice_channel(ctx, channel_name, category_name=None):
 
@@ -74,7 +76,7 @@ async def new_voice_channel(ctx, channel_name, category_name=None):
         await ctx.guild.create_voice_channel(channel_name, category=exist_cat)
 
 
-@bot.command(name="rvc")
+@bot.command(name="remove-voicechannel")
 @commands.has_guild_permissions(manage_channels=True)
 async def remove_voice_channel(ctx, channel_name, category_name=None):
 
@@ -91,8 +93,9 @@ async def remove_voice_channel(ctx, channel_name, category_name=None):
         await ctx.send(f"Voice channel \"{channel_name}\" does not exist under category: {category_name}")
 
 
-@bot.command(name="new_role")
-async def create_role(ctx):
+@bot.command(name="new-role")
+@commands.has_guild_permissions(manage_roles=True)
+async def new_role(ctx, role_name):
     pass
 
 
